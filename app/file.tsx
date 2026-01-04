@@ -2,7 +2,7 @@ import { useSearchParams } from "next/navigation";
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import MicroCMSIframe from "microcms-field-extension-api";
+import { postMessage } from "microcms-field-extension-api";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
@@ -50,7 +50,7 @@ export default function File({ id, src, isImage }: FileProps) {
   };
 
   const handleSelect = (id: string, src: string, isImage: boolean) => {
-    (MicroCMSIframe as any).postMessage({
+    postMessage({
       id: fieldId, // ★必須: API設定のフィールドIDと一致させる
       message: {
         id: id, // データのユニークID（ファイル名などでOK）
