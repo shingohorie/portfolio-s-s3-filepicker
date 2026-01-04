@@ -40,7 +40,6 @@ export default function FileBrowser() {
         return;
       }
 
-      // try {
       // ListObjectsV2コマンドを作成
       const command = new ListObjectsV2Command({
         Bucket: BUCKET_NAME,
@@ -79,12 +78,6 @@ export default function FileBrowser() {
         });
 
       setFiles(fileList);
-      // } catch (err: any) {
-      //   console.error(err);
-      //   setError(err.message || "S3からの取得に失敗しました");
-      // } finally {
-      //   setLoading(false);
-      // }
     };
 
     fetchFiles();
