@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { useSearchParams } from "next/navigation";
 
+import client from "./aws";
 import File from "./file";
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
 const BUCKET_NAME = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
-const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY;
 const AUTH_TOKEN = process.env.NEXT_PUBLIC_AUTH_TOKEN;
 
 // 公開URLのベース
@@ -37,18 +36,22 @@ export default function FileBrowser() {
         return;
       }
 
-      if (!REGION || !BUCKET_NAME || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
+      if (!client) {
         return;
       }
 
-      // S3クライアントの初期化
-      const client = new S3Client({
-        region: REGION,
-        credentials: {
-          accessKeyId: ACCESS_KEY_ID,
-          secretAccessKey: SECRET_ACCESS_KEY,
-        },
-      });
+      // if (!REGION || !BUCKET_NAME || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
+      //   return;
+      // }
+
+      // // S3クライアントの初期化
+      // const client = new S3Client({
+      //   region: REGION,
+      //   credentials: {
+      //     accessKeyId: ACCESS_KEY_ID,
+      //     secretAccessKey: SECRET_ACCESS_KEY,
+      //   },
+      // });
 
       // try {
       // ListObjectsV2コマンドを作成
@@ -61,7 +64,7 @@ export default function FileBrowser() {
       const data = await client.send(command);
 
       // データの整形
-      const fileList: S3File[] = (data.Contents || [])
+      const fileList: S3File[] = (data?.Contents || [])
         .filter((item) => item.Key && !item.Key.endsWith("/")) // フォルダを除外
         .map((item) => ({
           key: item.Key!,
