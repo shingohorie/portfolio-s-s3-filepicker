@@ -10,7 +10,7 @@ type AssetProps = {
   isImage: boolean;
 };
 
-export default function Asset({ id, src, isImage }: AssetProps) {
+export default function File({ id, src, isImage }: AssetProps) {
   const [isHover, setIsHover] = useState(false);
   return (
     <div className="relative table mb-2">
@@ -34,6 +34,8 @@ export default function Asset({ id, src, isImage }: AssetProps) {
           isHover ? "" : "hidden",
           "block absolute top-0 left-[100%] w-[320px] ml-4 z-10 border border-gray-300 bg-white p-2 shadow-lg"
         )}
+        onMouseOver={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
       >
         {isImage ? (
           <img src={src} alt={id} className="block w-[100%] h-auto" />

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { useSearchParams } from "next/navigation";
 
-import Asset from "./asset";
+import File from "./file";
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
@@ -104,7 +104,7 @@ export default function FileBrowser() {
     <div className="p-4">
       {files &&
         files.map((file) => (
-          <Asset
+          <File
             key={file.key}
             id={file.key}
             src={file.url}
