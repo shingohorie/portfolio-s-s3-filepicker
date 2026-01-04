@@ -1,8 +1,12 @@
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { postMessage } from "microcms-field-extension-api";
+import {
+  setupFieldExtension,
+  sendFieldExtensionMessage,
+} from "microcms-field-extension-api";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
@@ -26,6 +30,8 @@ export default function File({ id, src, isImage }: FileProps) {
   // ★重要: URLパラメータの 'id' を取得する
   // カスタムフィールド内では、microCMSがここ毎回違うIDを自動で入れてくれます
   const fieldId = searchParams.get("id");
+  const origin =
+    searchParams.get("origin") || "https://portfolio-s.microcms.io";
 
   const handleOpenPresigned = async (key: string) => {
     if (
@@ -50,21 +56,40 @@ export default function File({ id, src, isImage }: FileProps) {
   };
 
   const handleSelect = (id: string, src: string, isImage: boolean) => {
-    postMessage({
-      id: fieldId, // ★必須: API設定のフィールドIDと一致させる
-      message: {
-        id: id, // データのユニークID（ファイル名などでOK）
-        title: id, // 管理画面で見えるタイトル
-        description: `Size: ${new Date().toLocaleDateString()}`, // 補足説明
-        imageUrl: isImage ? src : undefined, // ★プレビュー用画像
-        updatedAt: new Date().toISOString(),
-        data: src, // ★最重要: APIで配信される実際の値（S3のURL）
+    if (!fieldId) {
+      alert("フィールドIDがありません。microCMS管理画面から開いてください。");
+      return;
+    }
+
+    // 2. 送信処理（関数名修正）
+    sendFieldExtensionMessage(
+      {
+        id: fieldId,
+        message: {
+          id: id,
+          title: id,
+          imageUrl: isImage ? src : undefined,
+          data: src, // APIで返却される値
+        },
       },
-    });
+      origin // 第2引数にもオリジンが必要です
+    );
 
     // ユーザーへのフィードバック（任意）
     alert(`microCMSにセットしました: \n${id}`);
   };
+
+  useEffect(() => {
+    // 1. 初期化処理（関数名修正）
+    setupFieldExtension({
+      origin: origin, // メッセージを受け取る親元を指定
+      width: "100%",
+      height: 400,
+      onDefaultData: (data) => {
+        console.log("初期データ:", data);
+      },
+    });
+  }, [origin]);
 
   // 1. microCMS SDKの初期化
   return (
