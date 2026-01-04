@@ -40,19 +40,6 @@ export default function FileBrowser() {
         return;
       }
 
-      // if (!REGION || !BUCKET_NAME || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
-      //   return;
-      // }
-
-      // // S3クライアントの初期化
-      // const client = new S3Client({
-      //   region: REGION,
-      //   credentials: {
-      //     accessKeyId: ACCESS_KEY_ID,
-      //     secretAccessKey: SECRET_ACCESS_KEY,
-      //   },
-      // });
-
       // try {
       // ListObjectsV2コマンドを作成
       const command = new ListObjectsV2Command({
@@ -104,7 +91,7 @@ export default function FileBrowser() {
   }, []);
 
   return (
-    <div className="p-4">
+    <div>
       {files &&
         files.map((file) => (
           <File
