@@ -3,20 +3,19 @@ import { useEffect, useState } from "react";
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import {
-  setupFieldExtension,
-  sendFieldExtensionMessage,
-} from "microcms-field-extension-api";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
+import { IoMdEye } from "react-icons/io";
 
 import client from "./aws";
 
 type FileProps = {
   id: string;
-  src: string;
+  fullURL: string;
   isImage: boolean;
+  isSelected: boolean;
+  onSelect: (id: string) => void;
 };
 
 // 環境変数の読み込み
@@ -24,10 +23,20 @@ const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
 const BUCKET_NAME = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
 const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
 const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY;
+const MICROCMS_SERVICE_ID = process.env.NEXT_PUBLIC_MICROCMS_SERVICE_ID;
 
-export default function File({ id, src, isImage }: FileProps) {
+const ORIGIN = `https://${MICROCMS_SERVICE_ID}.microcms.io`;
+
+export default function File({
+  id,
+  fullURL,
+  isImage,
+  isSelected,
+  onSelect,
+}: FileProps) {
   const [frameID, setFrameID] = useState("");
 
+  // viewボタンを押下したら署名付きURLを発行して開く
   const handleOpenPresigned = async (key: string) => {
     if (
       !REGION ||
@@ -50,7 +59,14 @@ export default function File({ id, src, isImage }: FileProps) {
     window.open(signedUrl, "_blank");
   };
 
-  const handleSelect = (src: string) => {
+  // ファイルを選択したらmicroCMS側にポストメッセージを送信
+  const handleSelect = (id: string, fullURL: string) => {
+    // FileBrowser側の状態を更新
+    if (id && onSelect) {
+      onSelect(id);
+    }
+
+    // microCMS側にもポストメッセージを送信
     window.parent.postMessage(
       {
         id: frameID, // iframe識別子
@@ -58,60 +74,50 @@ export default function File({ id, src, isImage }: FileProps) {
         message: {
           id: frameID,
           data: {
-            // APIのレスポンスとなる部分
-            id: src,
+            id: fullURL,
           },
         },
       },
-      "https://portfolio-s.microcms.io"
+      ORIGIN
     );
   };
 
   useEffect(() => {
+    // microCMSからのメッセージを受信
     window.addEventListener("message", (e) => {
-      if (
-        e.isTrusted === true &&
-        e.data.action === "MICROCMS_GET_DEFAULT_DATA"
-      ) {
-        console.log("初期データ:", e.data);
-        setFrameID(e.data.id);
-        // idやmessageを保存する
-        // e.data.id: 識別子
-        // e.data.message: 設定済みの値
-        // e.data.user.email: ログイン中のユーザーメールアドレス情報
-        // e.data.context.endpoint: APIのエンドポイント名
+      if (e.isTrusted !== true) {
+        return;
       }
-      if (
-        e.isTrusted === true &&
-        e.data.action === "MICROCMS_POST_DATA_SUCCESS"
-      ) {
+      if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
+        console.log("初期データ:", e.data);
+        setFrameID(e.data.id); // iframe識別子を保存
+      } else if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
         console.log("レスポンス:", e.data);
       }
     });
   }, []);
 
-  // 1. microCMS SDKの初期化
   return (
     <div className="relative table mb-2">
-      <p>
-        {isImage ? (
-          <FcImageFile className="inline-block mr-2 mb-1" />
-        ) : (
-          <FcClapperboard className="inline-block mr-2 mb-1" />
-        )}
+      <p className="flex items-center gap-2">
+        {isImage ? <FcImageFile /> : <FcClapperboard />}
 
         <span
-          className="cursor-pointer hover:text-blue-500"
-          onClick={() => handleSelect(src)}
+          className={
+            isSelected
+              ? "pointer-events-none opacity-50"
+              : `cursor-pointer hover:text-blue-500`
+          }
+          onClick={() => handleSelect(id, fullURL)}
         >
           {id}
         </span>
 
         <button
           onClick={() => handleOpenPresigned(id)}
-          className="ml-2 text-[10px] bg-gray-200 p-1 cursor-pointer hover:text-blue-500"
+          className="cursor-pointer hover:text-blue-500"
         >
-          view <RiCheckboxMultipleBlankLine className="inline-block mb-1" />
+          <IoMdEye />
         </button>
       </p>
     </div>

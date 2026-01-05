@@ -17,7 +17,7 @@ const PUBLIC_URL_BASE = `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/`;
 
 type S3File = {
   key: string;
-  url: string;
+  fullURL: string;
   isImage: boolean;
   lastModified: Date;
 };
@@ -26,17 +26,16 @@ export default function FileBrowser() {
   const searchParams = useSearchParams();
 
   const [files, setFiles] = useState<S3File[]>([]);
+  const [selectedFile, setSelectedFile] = useState("");
 
   // S3から一覧を取得する処理
   useEffect(() => {
+    // 認証トークンの取得
     const authToken = searchParams.get("auth");
 
     const fetchFiles = async () => {
-      if (AUTH_TOKEN && authToken !== AUTH_TOKEN) {
-        return;
-      }
-
-      if (!client) {
+      // パラメータに認証トークンがなければ処理を中断
+      if ((AUTH_TOKEN && authToken !== AUTH_TOKEN) || !client) {
         return;
       }
 
@@ -54,7 +53,7 @@ export default function FileBrowser() {
         .filter((item) => item.Key && !item.Key.endsWith("/")) // フォルダを除外
         .map((item) => ({
           key: item.Key!,
-          url: PUBLIC_URL_BASE + item.Key!,
+          fullURL: PUBLIC_URL_BASE + item.Key!,
           isImage: /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item.Key!),
           lastModified: item.LastModified ?? new Date(0),
         }))
@@ -65,7 +64,6 @@ export default function FileBrowser() {
           const extB = b.key.split(".").pop()?.toLowerCase() || "";
 
           // 2. 第一ソート：拡張子で比較
-          // localeCompareは、文字列を比較して -1, 0, 1 を返す便利な関数です
           const extComparison = extA.localeCompare(extB);
 
           // 拡張子が違うなら、その結果を返す（これで順序が決まる）
@@ -85,13 +83,23 @@ export default function FileBrowser() {
 
   return (
     <div>
+      {selectedFile && (
+        <p className="mb-4 p-3 bg-blue-100 rounded border border-blue-300">
+          <span className="block text-sm font-semibold text-gray-700">
+            選択中:
+          </span>
+          <span className="block text-base text-gray-900">{selectedFile}</span>
+        </p>
+      )}
       {files &&
         files.map((file) => (
           <File
             key={file.key}
             id={file.key}
-            src={file.url}
+            fullURL={file.fullURL}
             isImage={file.isImage}
+            isSelected={selectedFile === file.key}
+            onSelect={setSelectedFile}
           />
         ))}
     </div>
