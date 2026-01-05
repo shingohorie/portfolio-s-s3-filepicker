@@ -87,11 +87,11 @@ export default function File({
         {isImage ? <FcImageFile /> : <FcClapperboard />}
 
         <span
-          className={
+          className={`font-mono ${
             isSelected
               ? "pointer-events-none opacity-50"
               : "cursor-pointer hover:text-blue-500"
-          }
+          }`}
           onClick={() => handleSelect(id, fullURL)}
         >
           {id}
