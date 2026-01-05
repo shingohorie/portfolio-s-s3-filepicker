@@ -85,13 +85,14 @@ export default function File({
   useEffect(() => {
     // microCMSからのメッセージを受信
     window.addEventListener("message", (e) => {
-      if (e.isTrusted !== true) {
+      if (!e.isTrusted) {
         return;
       }
       if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
         console.log("初期データ:", e.data);
         setFrameID(e.data.id); // iframe識別子を保存
-      } else if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
+      }
+      if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
         console.log("レスポンス:", e.data);
       }
     });
