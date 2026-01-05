@@ -4,9 +4,11 @@ export default function SelectedFileViewer({
   selectedFile: string;
 }) {
   return (
-    <p className="mb-4 p-3 bg-blue-100 rounded border border-blue-300">
-      <span className="block text-sm font-semibold text-gray-700">選択中:</span>
-      <span className="block text-base text-gray-900">{selectedFile}</span>
-    </p>
+    <div className="sticky top-0 left-0 z-10 pb-4">
+      <div className="relative p-3 bg-blue-100 rounded border border-blue-300 custom-shadow">
+        <p className="block text-sm font-semibold text-gray-700">選択中:</p>
+        <p className="block text-base text-gray-900">{selectedFile}</p>
+      </div>
+    </div>
   );
 }
