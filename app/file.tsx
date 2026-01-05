@@ -13,6 +13,7 @@ import client from "./aws";
 type FileProps = {
   id: string;
   fullURL: string;
+  frameID: string;
   isImage: boolean;
   isSelected: boolean;
   onSelect: (id: string) => void;
@@ -30,12 +31,11 @@ const ORIGIN = `https://${MICROCMS_SERVICE_ID}.microcms.io`;
 export default function File({
   id,
   fullURL,
+  frameID,
   isImage,
   isSelected,
   onSelect,
 }: FileProps) {
-  const [frameID, setFrameID] = useState("");
-
   // viewボタンを押下したら署名付きURLを発行して開く
   const handleOpenPresigned = async (key: string) => {
     if (
@@ -81,22 +81,6 @@ export default function File({
       ORIGIN
     );
   };
-
-  useEffect(() => {
-    // microCMSからのメッセージを受信
-    window.addEventListener("message", (e) => {
-      if (!e.isTrusted) {
-        return;
-      }
-      if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
-        console.log("初期データ:", e.data);
-        setFrameID(e.data.id); // iframe識別子を保存
-      }
-      if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
-        console.log("レスポンス:", e.data);
-      }
-    });
-  }, []);
 
   return (
     <div className="relative table mb-2">

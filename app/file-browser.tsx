@@ -27,6 +27,7 @@ export default function FileBrowser() {
 
   const [files, setFiles] = useState<S3File[]>([]);
   const [selectedFile, setSelectedFile] = useState("");
+  const [frameID, setFrameID] = useState("");
 
   // S3から一覧を取得する処理
   useEffect(() => {
@@ -79,6 +80,20 @@ export default function FileBrowser() {
     };
 
     fetchFiles();
+
+    // microCMSからのメッセージを受信
+    window.addEventListener("message", (e) => {
+      if (!e.isTrusted) {
+        return;
+      }
+      if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
+        console.log("初期データ:", e.data);
+        setFrameID(e.data.id); // iframe識別子を保存
+      }
+      if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
+        console.log("レスポンス:", e.data);
+      }
+    });
   }, []);
 
   return (
@@ -96,6 +111,7 @@ export default function FileBrowser() {
           <File
             key={file.key}
             id={file.key}
+            frameID={frameID}
             fullURL={file.fullURL}
             isImage={file.isImage}
             isSelected={selectedFile === file.key}
