@@ -56,38 +56,49 @@ export default function File({ id, src, isImage }: FileProps) {
   };
 
   const handleSelect = (id: string, src: string, isImage: boolean) => {
-    if (!fieldId) {
-      alert("フィールドIDがありません。microCMS管理画面から開いてください。");
-      return;
-    }
-
-    // 2. 送信処理（関数名修正）
-    sendFieldExtensionMessage(
-      {
-        id: fieldId,
-        message: {
-          id: id,
-          title: id,
-          imageUrl: isImage ? src : undefined,
-          data: src, // APIで返却される値
-        },
-      },
-      origin // 第2引数にもオリジンが必要です
-    );
-
-    // ユーザーへのフィードバック（任意）
-    alert(`microCMSにセットしました: \n${id}`);
+    // if (!fieldId) {
+    //   alert("フィールドIDがありません。microCMS管理画面から開いてください。");
+    //   return;
+    // }
+    // // 2. 送信処理（関数名修正）
+    // sendFieldExtensionMessage(
+    //   {
+    //     id: fieldId,
+    //     message: {
+    //       id: id,
+    //       title: id,
+    //       imageUrl: isImage ? src : undefined,
+    //       data: src, // APIで返却される値
+    //     },
+    //   },
+    //   origin // 第2引数にもオリジンが必要です
+    // );
+    // // ユーザーへのフィードバック（任意）
+    // alert(`microCMSにセットしました: \n${id}`);
   };
 
   useEffect(() => {
     // 1. 初期化処理（関数名修正）
-    setupFieldExtension({
-      origin: origin, // メッセージを受け取る親元を指定
-      width: "100%",
-      height: 400,
-      onDefaultData: (data) => {
-        console.log("初期データ:", data);
-      },
+    // setupFieldExtension({
+    //   origin: origin, // メッセージを受け取る親元を指定
+    //   width: "100%",
+    //   height: 400,
+    //   onDefaultData: (data) => {
+    //     console.log("初期データ:", data);
+    //   },
+    // });
+    window.addEventListener("message", (e) => {
+      if (
+        e.isTrusted === true &&
+        e.data.action === "MICROCMS_GET_DEFAULT_DATA"
+      ) {
+        console.log("初期データ:", e.data);
+        // idやmessageを保存する
+        // e.data.id: 識別子
+        // e.data.message: 設定済みの値
+        // e.data.user.email: ログイン中のユーザーメールアドレス情報
+        // e.data.context.endpoint: APIのエンドポイント名
+      }
     });
   }, [origin]);
 
