@@ -85,6 +85,12 @@ export default function File({ id, src, isImage }: FileProps) {
         // e.data.user.email: ログイン中のユーザーメールアドレス情報
         // e.data.context.endpoint: APIのエンドポイント名
       }
+      if (
+        e.isTrusted === true &&
+        e.data.action === "MICROCMS_POST_DATA_SUCCESS"
+      ) {
+        console.log("レスポンス:", e.data);
+      }
     });
   }, []);
 
