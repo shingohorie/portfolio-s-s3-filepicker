@@ -95,7 +95,9 @@ export default function FileBrowser() {
       if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
         console.log("初期データ:", e.data);
         setFrameID(e.data.id); // iframe識別子を保存
-        setSelectedFile(e.data.message.data.id); // 前回セットした値を保存
+        if (e.data.message.data && e.data.message.data.id) {
+          setSelectedFile(e.data.message.data.id); // 前回セットした値を保存
+        }
       }
       if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
         console.log("レスポンス:", e.data);
