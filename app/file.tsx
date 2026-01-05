@@ -1,15 +1,12 @@
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
-import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
 import { IoMdEye } from "react-icons/io";
 
 import client from "./aws";
 
+// S3から取得した情報の型定義
 type FileProps = {
   id: string;
   fullURL: string;
@@ -26,6 +23,7 @@ const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
 const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY;
 const MICROCMS_SERVICE_ID = process.env.NEXT_PUBLIC_MICROCMS_SERVICE_ID;
 
+// microCMSのオリジンURL
 const ORIGIN = `https://${MICROCMS_SERVICE_ID}.microcms.io`;
 
 export default function File({
@@ -36,7 +34,7 @@ export default function File({
   isSelected,
   onSelect,
 }: FileProps) {
-  // viewボタンを押下したら署名付きURLを発行して開く
+  // 署名付きURLを発行して開く処理
   const handleOpenPresigned = async (key: string) => {
     if (
       !REGION ||
@@ -92,7 +90,7 @@ export default function File({
           className={
             isSelected
               ? "pointer-events-none opacity-50"
-              : `cursor-pointer hover:text-blue-500`
+              : "cursor-pointer hover:text-blue-500"
           }
           onClick={() => handleSelect(id, fullURL)}
         >
@@ -100,8 +98,8 @@ export default function File({
         </span>
 
         <button
-          onClick={() => handleOpenPresigned(id)}
           className="cursor-pointer hover:text-blue-500"
+          onClick={() => handleOpenPresigned(id)}
         >
           <IoMdEye />
         </button>
