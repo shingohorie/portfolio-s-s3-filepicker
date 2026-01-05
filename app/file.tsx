@@ -75,6 +75,7 @@ export default function File({
           id: frameID,
           data: {
             url: fullURL,
+            id: id,
           },
         },
       },
