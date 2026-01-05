@@ -57,10 +57,6 @@ export default function File({ id, src, isImage }: FileProps) {
         action: "MICROCMS_POST_DATA",
         message: {
           id: frameID,
-          title: "some-title",
-          description: "some-description",
-          imageUrl: "some-image-url",
-          updatedAt: "some-updated-at",
           data: {
             // APIのレスポンスとなる部分
             id: src,
