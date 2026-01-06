@@ -35,6 +35,8 @@ export default function File({
   isSelected,
   onSelect,
 }: FileProps) {
+  const domId = `file-item-${id}`;
+
   // 署名付きURLを発行して開く処理
   const handleOpenPresigned = async (key: string) => {
     if (
@@ -81,7 +83,7 @@ export default function File({
   };
 
   return (
-    <div className="relative table mb-2">
+    <div className="relative table mb-2" id={domId}>
       <p className="flex items-center gap-2">
         {isImage ? <FcImageFile /> : <FcClapperboard />}
 
