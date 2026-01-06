@@ -47,7 +47,7 @@ export default function FileBrowser() {
     // ListObjectsV2コマンドを作成
     const command = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,
-      MaxKeys: 100, // 取得数（必要に応じて増やす）
+      MaxKeys: 1000, // 取得数（必要に応じて増やす）
     });
 
     // 送信
@@ -65,18 +65,18 @@ export default function FileBrowser() {
       // 新しい順に並び替え
       .sort((a, b) => {
         // 1. 拡張子を取り出して小文字にする（ない場合は空文字）
-        const extA = a.key.split(".").pop()?.toLowerCase() || "";
-        const extB = b.key.split(".").pop()?.toLowerCase() || "";
+        // const extA = a.key.split(".").pop()?.toLowerCase() || "";
+        // const extB = b.key.split(".").pop()?.toLowerCase() || "";
 
-        // 2. 第一ソート：拡張子で比較
-        const extComparison = extA.localeCompare(extB);
+        // // 2. 第一ソート：拡張子で比較
+        // const extComparison = extA.localeCompare(extB);
 
-        // 拡張子が違うなら、その結果を返す（これで順序が決まる）
-        if (extComparison !== 0) {
-          return extComparison;
-        }
+        // // 拡張子が違うなら、その結果を返す（これで順序が決まる）
+        // if (extComparison !== 0) {
+        //   return extComparison;
+        // }
 
-        // 3. 第二ソート：拡張子が同じなら、ファイル名（キー）全体で比較
+        // // 3. 第二ソート：拡張子が同じなら、ファイル名（キー）全体で比較
         return a.key.localeCompare(b.key);
       });
 
@@ -95,9 +95,7 @@ export default function FileBrowser() {
       if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
         console.log("初期データ:", e.data);
         setFrameID(e.data.id); // iframe識別子を保存
-        if (e.data.message.data && e.data.message.data.id) {
-          setSelectedFile(e.data.message.data.id); // 前回セットした値を保存
-        }
+        setSelectedFile(e.data.message.data.id); // 前回セットした値を保存
       }
       if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
         console.log("レスポンス:", e.data);
