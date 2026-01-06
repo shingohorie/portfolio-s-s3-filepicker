@@ -65,44 +65,19 @@ export default function File({
       onSelect(id);
     }
 
+    // microCMS側にもポストメッセージを送信
     sendFieldExtensionMessage(
       {
         id: frameID,
-
         message: {
-          /**
-           * Any object that can be serialized to JSON.
-           * This value returned by contents API.
-           * required.
-           */
           data: {
             url: fullURL,
             id: id,
           },
         },
       },
-
-      /**
-       * Origin passed to `iframe.set`.
-       */
       ORIGIN
     );
-
-    // microCMS側にもポストメッセージを送信
-    // window.parent.postMessage(
-    //   {
-    //     id: frameID, // iframe識別子
-    //     action: "MICROCMS_POST_DATA",
-    //     message: {
-    //       id: frameID,
-    //       data: {
-    //         url: fullURL,
-    //         id: id,
-    //       },
-    //     },
-    //   },
-    //   ORIGIN
-    // );
   };
 
   return (

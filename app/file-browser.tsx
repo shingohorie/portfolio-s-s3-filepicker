@@ -93,61 +93,18 @@ export default function FileBrowser() {
     fetchFiles();
 
     // microCMSからのメッセージを受信
-    /**
-     * Setup iframe field.
-     */
     setupFieldExtension({
-      /**
-       * This iframe will only receive messages from this origin.
-       * If you specify "*", you can receive messages from all origins. (Not recommend)
-       * required.
-       */
       origin: ORIGIN,
-
-      /**
-       * Height of iframe field in admin page.
-       * string or number. optional.
-       */
-      height: 500,
-
-      /**
-       * Width of iframe field in admin page.
-       * string or number. optional.
-       */
-      width: "100%",
-
-      /**
-       * Callback when you get the initial value.
-       */
-      onDefaultData: (message) => {
-        console.log("初期データ:", message);
-        setFrameID(message.data.id); // iframe識別子を保存
-        setSelectedFile(message.data.message?.data.id || ""); // 前回セットした値を保存
+      width: "100%", //iframeの幅
+      height: 500, //iframeの高さ
+      onDefaultData: (e) => {
+        console.log("初期データ:", e);
+        setFrameID(e.data.id); // iframe識別子を保存
+        setSelectedFile(e.data.message?.data.id || ""); // 前回セットした値を保存
       },
-
-      /**
-       * Callback when you succeed to post value.
-       */
-      onPostSuccess: (message) => console.log("成功時レスポンス:", message),
-
-      /**
-       * Callback when you failed to post value.
-       */
-      onPostError: (message) => console.log("失敗時レスポンス:", message),
+      onPostSuccess: (e) => console.log("成功時レスポンス:", e),
+      onPostError: (e) => console.log("失敗時レスポンス:", e),
     });
-    // window.addEventListener("message", (e) => {
-    //   if (!e.isTrusted) {
-    //     return;
-    //   }
-    //   if (e.data.action === "MICROCMS_GET_DEFAULT_DATA") {
-    //     console.log("初期データ:", e.data);
-    //     setFrameID(e.data.id); // iframe識別子を保存
-    //     setSelectedFile(e.data.message.data.id); // 前回セットした値を保存
-    //   }
-    //   if (e.data.action === "MICROCMS_POST_DATA_SUCCESS") {
-    //     console.log("レスポンス:", e.data);
-    //   }
-    // });
   }, []);
 
   return (
