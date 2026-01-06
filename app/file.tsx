@@ -1,5 +1,6 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { sendFieldExtensionMessage } from "microcms-field-extension-api";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { IoMdEye } from "react-icons/io";
@@ -64,21 +65,44 @@ export default function File({
       onSelect(id);
     }
 
-    // microCMS側にもポストメッセージを送信
-    window.parent.postMessage(
+    sendFieldExtensionMessage(
       {
-        id: frameID, // iframe識別子
-        action: "MICROCMS_POST_DATA",
+        id: "item_123456",
+
         message: {
-          id: frameID,
+          /**
+           * Any object that can be serialized to JSON.
+           * This value returned by contents API.
+           * required.
+           */
           data: {
             url: fullURL,
             id: id,
           },
         },
       },
+
+      /**
+       * Origin passed to `iframe.set`.
+       */
       ORIGIN
     );
+
+    // microCMS側にもポストメッセージを送信
+    // window.parent.postMessage(
+    //   {
+    //     id: frameID, // iframe識別子
+    //     action: "MICROCMS_POST_DATA",
+    //     message: {
+    //       id: frameID,
+    //       data: {
+    //         url: fullURL,
+    //         id: id,
+    //       },
+    //     },
+    //   },
+    //   ORIGIN
+    // );
   };
 
   return (
