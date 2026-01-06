@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { setupFieldExtension } from "microcms-field-extension-api";
@@ -35,9 +35,6 @@ export default function FileBrowser() {
   const [files, setFiles] = useState<S3File[]>([]);
   const [selectedFile, setSelectedFile] = useState("");
   const [frameID, setFrameID] = useState("");
-
-  // 初回スクロールが完了したかを管理するフラグ
-  const hasScrolledRef = useRef(false);
 
   // パラメータに認証トークンがなければ処理を中断
   const authToken = searchParams.get("auth");
@@ -99,7 +96,7 @@ export default function FileBrowser() {
     setupFieldExtension({
       origin: ORIGIN,
       width: "100%", //iframeの幅
-      height: 500, //iframeの高さ
+      height: 300, //iframeの高さ
       onDefaultData: (e) => {
         console.log("初期データ:", e);
         setFrameID(e.data.id); // iframe識別子を保存
@@ -110,46 +107,26 @@ export default function FileBrowser() {
     });
   }, []);
 
-  useEffect(() => {
-    // 1. ファイル一覧がまだない、または選択ファイルがない場合は何もしない
-    if (files.length === 0 || !selectedFile) return;
-
-    // 2. すでに自動スクロール済みなら何もしない（手動選択時のジャンプ防止）
-    if (hasScrolledRef.current) return;
-
-    // 3. ターゲットの要素を探す
-    // ※Fileコンポーネント側で id={`file-item-${key}`} としている想定
-    // もしFileコンポーネントで id={key} そのままなら、ここは document.getElementById(selectedFile) になります
-    const targetId = `file-item-${selectedFile}`;
-    const targetElement = document.getElementById(targetId);
-
-    if (targetElement) {
-      // 4. スクロール実行
-      targetElement.scrollIntoView({
-        behavior: "instant", // スクロール
-        block: "center", // 画面の中央に持ってくる
-      });
-
-      // 5. フラグを立てて、次回以降は実行しないようにする
-      hasScrolledRef.current = true;
-    }
-  }, [files, selectedFile]); // files または selectedFile が更新されたら実行
-
   return (
     <div>
       {selectedFile && <SelectedFileViewer selectedFile={selectedFile} />}
-      {files &&
-        files.map((file) => (
-          <File
-            key={file.key}
-            id={file.key}
-            frameID={frameID}
-            fullURL={file.fullURL}
-            isImage={file.isImage}
-            isSelected={selectedFile === file.key}
-            onSelect={setSelectedFile}
-          />
-        ))}
+      <details>
+        <summary className="cursor-pointer mb-2">
+          ファイル一覧を表示／非表示
+        </summary>
+        {files &&
+          files.map((file) => (
+            <File
+              key={file.key}
+              id={file.key}
+              frameID={frameID}
+              fullURL={file.fullURL}
+              isImage={file.isImage}
+              isSelected={selectedFile === file.key}
+              onSelect={setSelectedFile}
+            />
+          ))}
+      </details>
     </div>
   );
 }
