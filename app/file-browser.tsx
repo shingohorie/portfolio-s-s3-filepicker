@@ -34,6 +34,7 @@ export default function FileBrowser() {
 
   const [files, setFiles] = useState<S3File[]>([]);
   const [selectedFile, setSelectedFile] = useState("");
+  const [isReady, setIsReady] = useState(false);
   const [frameID, setFrameID] = useState("");
 
   // パラメータに認証トークンがなければ処理を中断
@@ -69,23 +70,11 @@ export default function FileBrowser() {
       }))
       // 新しい順に並び替え
       .sort((a, b) => {
-        // 1. 拡張子を取り出して小文字にする（ない場合は空文字）
-        // const extA = a.key.split(".").pop()?.toLowerCase() || "";
-        // const extB = b.key.split(".").pop()?.toLowerCase() || "";
-
-        // // 2. 第一ソート：拡張子で比較
-        // const extComparison = extA.localeCompare(extB);
-
-        // // 拡張子が違うなら、その結果を返す（これで順序が決まる）
-        // if (extComparison !== 0) {
-        //   return extComparison;
-        // }
-
-        // // 3. 第二ソート：拡張子が同じなら、ファイル名（キー）全体で比較
         return a.key.localeCompare(b.key);
       });
 
     setFiles(fileList);
+    setIsReady(true);
   };
 
   useEffect(() => {
@@ -96,7 +85,7 @@ export default function FileBrowser() {
     setupFieldExtension({
       origin: ORIGIN,
       width: "100%", //iframeの幅
-      height: 300, //iframeの高さ
+      height: 250, //iframeの高さ
       onDefaultData: (e) => {
         console.log("初期データ:", e);
         setFrameID(e.data.id); // iframe識別子を保存
@@ -108,9 +97,11 @@ export default function FileBrowser() {
   }, []);
 
   return (
-    <div>
+    <div
+      className={`transition-opacity ${isReady ? "opacity-100" : "opacity-0"}`}
+    >
       {selectedFile && <SelectedFileViewer selectedFile={selectedFile} />}
-      <details>
+      <details open={!selectedFile}>
         <summary className="cursor-pointer mb-2">
           ファイル一覧を表示／非表示
         </summary>
