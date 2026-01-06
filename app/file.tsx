@@ -99,7 +99,7 @@ export default function File({
         </span>
 
         <button
-          className="cursor-pointer hover:text-blue-500"
+          className="cursor-pointer hover:text-blue-500 opacity-50 hover:opacity-100"
           onClick={() => handleOpenPresigned(id)}
         >
           <IoMdEye />
