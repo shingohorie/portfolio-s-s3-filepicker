@@ -121,7 +121,7 @@ export default function FileBrowser() {
        */
       onDefaultData: (message) => {
         console.log("初期データ:", message);
-        // setFrameID(e.data.id); // iframe識別子を保存
+        setFrameID(message.data.id); // iframe識別子を保存
         setSelectedFile(message.data.id); // 前回セットした値を保存
       },
 

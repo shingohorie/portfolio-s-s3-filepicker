@@ -67,7 +67,7 @@ export default function File({
 
     sendFieldExtensionMessage(
       {
-        id: "item_123456",
+        id: frameID,
 
         message: {
           /**
