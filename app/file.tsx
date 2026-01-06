@@ -89,13 +89,18 @@ export default function File({
 
         <span
           className={`inline-flex items-center gap-2 font-mono ${
-            isSelected
-              ? "pointer-events-none"
-              : "cursor-pointer opacity-50 hover:opacity-100"
+            isSelected ? "" : "opacity-50 hover:opacity-100"
           }`}
           onClick={() => handleSelect(id, fullURL)}
         >
-          {id}
+          <span
+            className={`${
+              isSelected ? "pointer-events-none" : "cursor-pointer"
+            }`}
+          >
+            {id}
+          </span>
+
           <button
             className="cursor-pointer hover:text-blue-500"
             onClick={() => handleOpenPresigned(id)}
