@@ -90,8 +90,8 @@ export default function File({
         <span
           className={`font-mono ${
             isSelected
-              ? "pointer-events-none opacity-50"
-              : "cursor-pointer hover:text-blue-500"
+              ? "pointer-events-none"
+              : "cursor-pointer opacity-50 hover:opacity-100"
           }`}
           onClick={() => handleSelect(id, fullURL)}
         >
