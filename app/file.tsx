@@ -88,7 +88,7 @@ export default function File({
         {isImage ? <FcImageFile /> : <FcClapperboard />}
 
         <span
-          className={`font-mono ${
+          className={`inline-flex items-center gap-2 font-mono ${
             isSelected
               ? "pointer-events-none"
               : "cursor-pointer opacity-50 hover:opacity-100"
@@ -96,14 +96,13 @@ export default function File({
           onClick={() => handleSelect(id, fullURL)}
         >
           {id}
+          <button
+            className="cursor-pointer hover:text-blue-500"
+            onClick={() => handleOpenPresigned(id)}
+          >
+            <IoMdEye />
+          </button>
         </span>
-
-        <button
-          className="cursor-pointer hover:text-blue-500 opacity-50 hover:opacity-100"
-          onClick={() => handleOpenPresigned(id)}
-        >
-          <IoMdEye />
-        </button>
       </p>
     </div>
   );
