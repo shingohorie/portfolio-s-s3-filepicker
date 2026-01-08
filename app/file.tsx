@@ -82,22 +82,22 @@ export default function File({
 
   return (
     <div className="relative table mb-2">
-      <p className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
         {isImage ? <FcImageFile /> : <FcClapperboard />}
 
-        <span
+        <div
           className={`inline-flex items-center gap-2 font-mono ${
             isSelected ? "" : "opacity-50 hover:opacity-100"
           }`}
           onClick={() => handleSelect(id, fullURL)}
         >
-          <span
+          <div
             className={`${
               isSelected ? "pointer-events-none" : "cursor-pointer"
             }`}
           >
             {id}
-          </span>
+          </div>
 
           <button
             className="cursor-pointer hover:text-blue-500"
@@ -105,8 +105,8 @@ export default function File({
           >
             <IoMdEye />
           </button>
-        </span>
-      </p>
+        </div>
+      </div>
     </div>
   );
 }

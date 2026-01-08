@@ -35,6 +35,7 @@ export default function FileBrowser() {
   const [files, setFiles] = useState<S3File[]>([]);
   const [selectedFile, setSelectedFile] = useState("");
   const [isReady, setIsReady] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [frameID, setFrameID] = useState("");
 
   // パラメータに認証トークンがなければ処理を中断
@@ -88,11 +89,17 @@ export default function FileBrowser() {
       height: 250, //iframeの高さ
       onDefaultData: (e) => {
         console.log("初期データ:", e);
-        setFrameID(e.data.id); // iframe識別子を保存
+        setFrameID(e.data.id); // iframe識別子を保存（postMessage送信時に必要なためここで取得しておく）
         setSelectedFile(e.data.message?.data.id || ""); // 前回セットした値を保存
       },
-      onPostSuccess: (e) => console.log("成功時レスポンス:", e),
-      onPostError: (e) => console.log("失敗時レスポンス:", e),
+      onPostSuccess: (e) => {
+        setIsError(false);
+        console.log("成功時レスポンス:", e);
+      },
+      onPostError: (e) => {
+        setIsError(true);
+        console.log("失敗時レスポンス:", e);
+      },
     });
   }, []);
 
@@ -100,11 +107,14 @@ export default function FileBrowser() {
     <div
       className={`transition-opacity ${isReady ? "opacity-100" : "opacity-0"}`}
     >
-      {selectedFile && <SelectedFileViewer selectedFile={selectedFile} />}
+      {selectedFile && (
+        <SelectedFileViewer selectedFile={selectedFile} isError={isError} />
+      )}
       <details open={!selectedFile}>
         <summary className="cursor-pointer mb-2">
           ファイル一覧を表示／非表示
         </summary>
+
         {files &&
           files.map((file) => (
             <File
