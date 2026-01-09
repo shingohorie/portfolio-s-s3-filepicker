@@ -89,12 +89,12 @@ export default function File({
           className={`inline-flex items-center gap-2 font-mono ${
             isSelected ? "" : "opacity-50 hover:opacity-100"
           }`}
-          onClick={() => handleSelect(id, fullURL)}
         >
           <div
             className={`${
               isSelected ? "pointer-events-none" : "cursor-pointer"
             }`}
+            onClick={() => handleSelect(id, fullURL)}
           >
             {id}
           </div>
