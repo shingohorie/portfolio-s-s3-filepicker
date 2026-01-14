@@ -2,12 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+// AWS SDKのインポート
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+// microCMS拡張フィールドAPIのインポート
 import { setupFieldExtension } from "microcms-field-extension-api";
 
 import client from "@/lib/aws";
 import File from "./File";
 import SelectedFileViewer from "./SelectedFileViewer";
+
+// JotaiのフックとAtomののインポート
+import { useAtom, useSetAtom } from "jotai";
+import { selectedFileAtom, frameIDAtom, isErrorAtom } from "@/state/atom";
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
@@ -32,11 +38,12 @@ type S3File = {
 export default function FileBrowser() {
   const searchParams = useSearchParams();
 
+  // Jotaiの状態管理
+  const [selectedFile, setSelectedFile] = useAtom(selectedFileAtom);
+  const setFrameID = useSetAtom(frameIDAtom);
+  const [isError, setIsError] = useAtom(isErrorAtom);
+
   const [files, setFiles] = useState<S3File[]>([]);
-  const [selectedFile, setSelectedFile] = useState("");
-  const [isReady, setIsReady] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [frameID, setFrameID] = useState("");
 
   // パラメータに認証トークンがなければ処理を中断
   const authToken = searchParams.get("auth");
@@ -75,7 +82,6 @@ export default function FileBrowser() {
       });
 
     setFiles(fileList);
-    setIsReady(true);
   };
 
   useEffect(() => {
@@ -104,12 +110,9 @@ export default function FileBrowser() {
   }, []);
 
   return (
-    <div
-      className={`transition-opacity ${isReady ? "opacity-100" : "opacity-0"}`}
-    >
-      {selectedFile && (
-        <SelectedFileViewer selectedFile={selectedFile} isError={isError} />
-      )}
+    <>
+      {selectedFile && <SelectedFileViewer />}
+
       <details open={!selectedFile}>
         <summary className="cursor-pointer mb-2">
           ファイル一覧を表示／非表示
@@ -120,14 +123,12 @@ export default function FileBrowser() {
             <File
               key={file.key}
               id={file.key}
-              frameID={frameID}
               fullURL={file.fullURL}
               isImage={file.isImage}
               isSelected={selectedFile === file.key}
-              onSelect={setSelectedFile}
             />
           ))}
       </details>
-    </div>
+    </>
   );
 }

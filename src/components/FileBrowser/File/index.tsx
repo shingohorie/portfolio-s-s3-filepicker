@@ -1,6 +1,13 @@
+// AWS SDKのインポート
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+// microCMS拡張フィールドAPIのインポート
 import { sendFieldExtensionMessage } from "microcms-field-extension-api";
+
+// JotaiのフックとAtomののインポート
+import { useAtom, useSetAtom, useAtomValue } from "jotai";
+import { selectedFileAtom, frameIDAtom } from "@/state/atom";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { IoMdEye } from "react-icons/io";
@@ -11,10 +18,8 @@ import client from "@/lib/aws";
 type FileProps = {
   id: string;
   fullURL: string;
-  frameID: string;
   isImage: boolean;
   isSelected: boolean;
-  onSelect: (id: string) => void;
 };
 
 // 環境変数の読み込み
@@ -30,11 +35,14 @@ const ORIGIN = `https://${MICROCMS_SERVICE_ID}.microcms.io`;
 export default function File({
   id,
   fullURL,
-  frameID,
+  // frameID,
   isImage,
   isSelected,
-  onSelect,
-}: FileProps) {
+}: // onSelect,
+FileProps) {
+  const setSelectedFile = useSetAtom(selectedFileAtom);
+  const frameID = useAtomValue(frameIDAtom);
+
   // 署名付きURLを発行して開く処理
   const handleOpenPresigned = async (key: string) => {
     if (
@@ -61,8 +69,8 @@ export default function File({
   // ファイルを選択したらmicroCMS側にポストメッセージを送信
   const handleSelect = (id: string, fullURL: string) => {
     // FileBrowser側の状態を更新
-    if (id && onSelect) {
-      onSelect(id);
+    if (id) {
+      setSelectedFile(id);
     }
 
     // microCMS側にもポストメッセージを送信

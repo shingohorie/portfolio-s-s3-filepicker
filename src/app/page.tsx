@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import FileBrowser from "./_components/FileBrowser";
+import FileBrowser from "@/components/FileBrowser";
 
 export default function Home() {
   return (

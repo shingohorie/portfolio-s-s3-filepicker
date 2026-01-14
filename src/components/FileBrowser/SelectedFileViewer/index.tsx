@@ -1,10 +1,11 @@
-export default function SelectedFileViewer({
-  selectedFile,
-  isError,
-}: {
-  selectedFile: string;
-  isError: boolean;
-}) {
+// JotaiのフックとAtomののインポート
+import { useAtomValue } from "jotai";
+import { selectedFileAtom, isErrorAtom } from "@/state/atom";
+
+export default function SelectedFileViewer() {
+  const selectedFile = useAtomValue(selectedFileAtom);
+  const isError = useAtomValue(isErrorAtom);
+
   return (
     <div className="sticky top-0 left-0 z-10 mb-4 p-4 bg-white -mt-4 -ml-4 -mr-4">
       <div
