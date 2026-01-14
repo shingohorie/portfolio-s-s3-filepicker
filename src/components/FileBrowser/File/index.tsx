@@ -7,7 +7,7 @@ import { sendFieldExtensionMessage } from "microcms-field-extension-api";
 
 // JotaiのフックとAtomののインポート
 import { useAtom, useSetAtom, useAtomValue } from "jotai";
-import { selectedFileAtom, frameIDAtom } from "@/state/atom";
+import { selectedFileAtom, frameIDAtom } from "../atom";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { IoMdEye } from "react-icons/io";

@@ -13,7 +13,7 @@ import SelectedFileViewer from "./SelectedFileViewer";
 
 // JotaiのフックとAtomののインポート
 import { useAtom, useSetAtom } from "jotai";
-import { selectedFileAtom, frameIDAtom, isErrorAtom } from "@/state/atom";
+import { selectedFileAtom, frameIDAtom, isErrorAtom } from "./atom";
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
@@ -49,6 +49,7 @@ export default function FileBrowser() {
   const authToken = searchParams.get("auth");
 
   if (AUTH_TOKEN && authToken !== AUTH_TOKEN) {
+    console.log("認証に失敗しました。URLにパラメータを追加してください。");
     return;
   }
 

@@ -1,6 +1,6 @@
 // JotaiのフックとAtomののインポート
 import { useAtomValue } from "jotai";
-import { selectedFileAtom, isErrorAtom } from "@/state/atom";
+import { selectedFileAtom, isErrorAtom } from "../atom";
 
 export default function SelectedFileViewer() {
   const selectedFile = useAtomValue(selectedFileAtom);
