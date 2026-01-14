@@ -5,9 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { setupFieldExtension } from "microcms-field-extension-api";
 
-import client from "./aws";
-import File from "./file";
-import SelectedFileViewer from "./selected-file";
+import client from "@/lib/aws";
+import File from "./File";
+import SelectedFileViewer from "./SelectedFileViewer";
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;

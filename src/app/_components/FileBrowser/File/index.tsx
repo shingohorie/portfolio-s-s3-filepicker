@@ -5,7 +5,7 @@ import { sendFieldExtensionMessage } from "microcms-field-extension-api";
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { IoMdEye } from "react-icons/io";
 
-import client from "./aws";
+import client from "@/lib/aws";
 
 // S3から取得した情報の型定義
 type FileProps = {
