@@ -7,7 +7,7 @@ import { sendFieldExtensionMessage } from "microcms-field-extension-api";
 
 // JotaiのフックとAtomののインポート
 import { useSetAtom, useAtomValue } from "jotai";
-import { selectedFileAtom, searchWordAtom, frameIDAtom } from "../atom";
+import { selectedFileAtom, frameIDAtom } from "../atom";
 
 import { FcImageFile, FcClapperboard } from "react-icons/fc";
 import { IoMdEye } from "react-icons/io";
@@ -34,7 +34,6 @@ const ORIGIN = `https://${MICROCMS_SERVICE_ID}.microcms.io`;
 
 export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
   const setSelectedFile = useSetAtom(selectedFileAtom);
-  const searchWord = useAtomValue(searchWordAtom);
   const frameID = useAtomValue(frameIDAtom);
 
   // 署名付きURLを発行して開く処理
@@ -83,11 +82,7 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
   };
 
   return (
-    <div
-      className={`relative table mb-2 ${
-        searchWord && id.indexOf(searchWord) === -1 ? "!hidden" : ""
-      }`}
-    >
+    <div className="relative table mb-2">
       <div className="flex items-center gap-2">
         {isImage ? <FcImageFile /> : <FcClapperboard />}
 

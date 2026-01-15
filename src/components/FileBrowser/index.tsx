@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 // AWS SDKのインポート
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
@@ -50,8 +50,6 @@ export default function FileBrowser() {
   const setIsError = useSetAtom(isErrorAtom);
 
   const [files, setFiles] = useState<S3File[]>([]);
-
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // パラメータに認証トークンがなければ処理を中断
   const authToken = searchParams.get("auth");
@@ -118,6 +116,15 @@ export default function FileBrowser() {
     });
   }, []);
 
+  const filteredFiles = useMemo(() => {
+    if (searchWord === "" || !searchWord) {
+      return files;
+    }
+    return files.filter(
+      (file) => file.key.split("/")[0].indexOf(searchWord) !== -1
+    );
+  }, [files, searchWord]);
+
   return (
     <>
       <div className="sticky top-0 left-0 z-10 mb-4 p-4 bg-white -mt-4 -ml-4 -mr-4">
@@ -129,7 +136,6 @@ export default function FileBrowser() {
           defaultValue={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
           placeholder="ファイル名で検索..."
-          ref={searchInputRef}
         />
       </div>
 
@@ -138,8 +144,8 @@ export default function FileBrowser() {
           ファイル一覧を表示／非表示
         </summary>
 
-        {files &&
-          files.map((file) => (
+        {filteredFiles &&
+          filteredFiles.map((file) => (
             <File
               key={file.key}
               id={file.key}
