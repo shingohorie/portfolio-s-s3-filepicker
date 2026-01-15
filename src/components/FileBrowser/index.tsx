@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 // AWS SDKのインポート
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
@@ -13,7 +13,12 @@ import SelectedFileViewer from "./SelectedFileViewer";
 
 // JotaiのフックとAtomののインポート
 import { useAtom, useSetAtom } from "jotai";
-import { selectedFileAtom, frameIDAtom, isErrorAtom } from "./atom";
+import {
+  selectedFileAtom,
+  searchWordAtom,
+  frameIDAtom,
+  isErrorAtom,
+} from "./atom";
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
@@ -40,10 +45,13 @@ export default function FileBrowser() {
 
   // Jotaiの状態管理
   const [selectedFile, setSelectedFile] = useAtom(selectedFileAtom);
+  const [searchWord, setSearchWord] = useAtom(searchWordAtom);
   const setFrameID = useSetAtom(frameIDAtom);
-  const [isError, setIsError] = useAtom(isErrorAtom);
+  const setIsError = useSetAtom(isErrorAtom);
 
   const [files, setFiles] = useState<S3File[]>([]);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // パラメータに認証トークンがなければ処理を中断
   const authToken = searchParams.get("auth");
@@ -113,6 +121,17 @@ export default function FileBrowser() {
   return (
     <>
       {selectedFile && <SelectedFileViewer />}
+
+      <div className="mb-4">
+        <input
+          className="block border-gray-300 border rounded px-2 py-1 w-[300px]"
+          type="text"
+          defaultValue={searchWord}
+          onChange={(e) => setSearchWord(e.target.value)}
+          placeholder="ファイル名で検索..."
+          ref={searchInputRef}
+        />
+      </div>
 
       <details open={!selectedFile}>
         <summary className="cursor-pointer mb-2">
