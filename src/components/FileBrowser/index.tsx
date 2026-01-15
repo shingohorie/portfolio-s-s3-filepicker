@@ -120,9 +120,9 @@ export default function FileBrowser() {
 
   return (
     <>
-      {selectedFile && <SelectedFileViewer />}
+      <div className="sticky top-0 left-0 z-10 mb-4 p-4 bg-white -mt-4 -ml-4 -mr-4">
+        {selectedFile && <SelectedFileViewer />}
 
-      <div className="mb-4">
         <input
           className="block border-gray-300 border rounded px-2 py-1 w-[300px]"
           type="text"
