@@ -25,8 +25,8 @@ type FileProps = {
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
 const BUCKET_NAME = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
-const ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const ACCESS_KEY_ID = process.env.PRIVATE_S3_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = process.env.PRIVATE_S3_SECRET_KEY;
 const MICROCMS_SERVICE_ID = process.env.NEXT_PUBLIC_MICROCMS_SERVICE_ID;
 
 // microCMSのオリジンURL

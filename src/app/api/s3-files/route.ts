@@ -4,9 +4,9 @@ import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
 const BUCKET_NAME = process.env.NEXT_PUBLIC_S3_BUCKET_NAME;
-const ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-const AUTH_TOKEN = process.env.AUTH_TOKEN;
+const ACCESS_KEY_ID = process.env.PRIVATE_S3_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = process.env.PRIVATE_S3_SECRET_KEY;
+const PRIVATE_AUTH_TOKEN = process.env.PRIVATE_AUTH_TOKEN;
 
 export async function GET(request: Request) {
   // リクエストされたURLから、クエリパラメータ(?auth=...)を取り出す
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   const clientToken = searchParams.get('auth');
 
   // 認証トークンを比較して、正しくない場合は401エラーを返す
-  if (AUTH_TOKEN && clientToken !== AUTH_TOKEN) {
+  if (PRIVATE_AUTH_TOKEN && clientToken !== PRIVATE_AUTH_TOKEN) {
     return NextResponse.json(
       { error: '認証エラー：不正なアクセスです' },
       { status: 401 },
