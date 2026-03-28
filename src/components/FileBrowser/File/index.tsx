@@ -1,7 +1,4 @@
-// AWS SDKのインポート
-import { GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
+import { useSearchParams } from 'next/navigation';
 // microCMS拡張フィールドAPIのインポート
 import { sendFieldExtensionMessage } from 'microcms-field-extension-api';
 
@@ -11,8 +8,6 @@ import { selectedFileAtom, frameIDAtom } from '../atom';
 
 import { FcImageFile, FcClapperboard } from 'react-icons/fc';
 import { IoMdEye } from 'react-icons/io';
-
-import client from '@/lib/aws';
 
 // S3から取得した情報の型定義
 type FileProps = {
@@ -35,28 +30,25 @@ const ORIGIN = `https://${MICROCMS_SERVICE_ID}.microcms.io`;
 export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
   const setSelectedFile = useSetAtom(selectedFileAtom);
   const frameID = useAtomValue(frameIDAtom);
+  const searchParams = useSearchParams();
+  const authToken = searchParams.get('auth');
 
   // 署名付きURLを発行して開く処理
   const handleOpenPresigned = async (key: string) => {
-    if (
-      !REGION ||
-      !BUCKET_NAME ||
-      !ACCESS_KEY_ID ||
-      !SECRET_ACCESS_KEY ||
-      !client
-    ) {
-      return;
+    try {
+      // 💡 自作APIを叩く
+      const res = await fetch(
+        `/api/s3-presign?key=${key}&auth=${authToken || ''}`,
+      );
+      if (!res.ok) throw new Error('署名取得に失敗しました');
+
+      const data = await res.json();
+      // 届いた署名付きURLを新しいタブで開く
+      window.open(data.url, '_blank');
+    } catch (error) {
+      console.error(error);
+      alert('ファイルの表示に失敗しました。');
     }
-
-    const command = new GetObjectCommand({
-      Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME,
-      Key: key,
-    });
-
-    // 署名付きURLを発行して開く（有効期限 60秒）
-    const signedUrl = await getSignedUrl(client, command, { expiresIn: 60 });
-
-    window.open(signedUrl, '_blank');
   };
 
   // ファイルを選択したらmicroCMS側にポストメッセージを送信
