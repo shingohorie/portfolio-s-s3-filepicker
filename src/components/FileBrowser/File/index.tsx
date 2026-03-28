@@ -36,7 +36,7 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
   // 署名付きURLを発行して開く処理
   const handleOpenPresigned = async (key: string) => {
     try {
-      // 💡 自作APIを叩く
+      // 環境変数が露出しないよう、取得したトークンを裏窓APIにパスワードとして渡す
       const res = await fetch(
         `/api/s3-presign?key=${key}&auth=${authToken || ''}`,
       );

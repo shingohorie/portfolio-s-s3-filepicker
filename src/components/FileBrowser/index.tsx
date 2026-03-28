@@ -54,7 +54,7 @@ export default function FileBrowser() {
   // S3から一覧を取得する処理
   const fetchFiles = async () => {
     try {
-      // 取得したトークンを、裏窓APIにパスワードとして渡す
+      // 環境変数が露出しないよう、取得したトークンを裏窓APIにパスワードとして渡す
       const res = await fetch(`/api/s3-files?auth=${authToken || ''}`);
 
       if (res.status === 401) {
