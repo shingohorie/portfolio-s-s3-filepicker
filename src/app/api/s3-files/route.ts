@@ -21,13 +21,6 @@ export async function GET(request: Request) {
     );
   }
 
-  console.log('【デバッグ】環境変数のチェック:', {
-    REGION: REGION ? 'OK' : 'NG',
-    BUCKET_NAME: BUCKET_NAME ? 'OK' : 'NG',
-    ACCESS_KEY_ID: ACCESS_KEY_ID ? 'OK' : 'NG',
-    SECRET_ACCESS_KEY: SECRET_ACCESS_KEY ? 'OK' : 'NG',
-  });
-
   if (!REGION || !BUCKET_NAME || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
     return NextResponse.json(
       { error: 'AWS設定が不足しています' },
