@@ -1,18 +1,18 @@
 // AWS SDKのインポート
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // microCMS拡張フィールドAPIのインポート
-import { sendFieldExtensionMessage } from "microcms-field-extension-api";
+import { sendFieldExtensionMessage } from 'microcms-field-extension-api';
 
 // JotaiのフックとAtomののインポート
-import { useSetAtom, useAtomValue } from "jotai";
-import { selectedFileAtom, frameIDAtom } from "../atom";
+import { useSetAtom, useAtomValue } from 'jotai';
+import { selectedFileAtom, frameIDAtom } from '../atom';
 
-import { FcImageFile, FcClapperboard } from "react-icons/fc";
-import { IoMdEye } from "react-icons/io";
+import { FcImageFile, FcClapperboard } from 'react-icons/fc';
+import { IoMdEye } from 'react-icons/io';
 
-import client from "@/lib/aws";
+import client from '@/lib/aws';
 
 // S3から取得した情報の型定義
 type FileProps = {
@@ -25,8 +25,8 @@ type FileProps = {
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
 const BUCKET_NAME = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
-const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY;
+const ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const MICROCMS_SERVICE_ID = process.env.NEXT_PUBLIC_MICROCMS_SERVICE_ID;
 
 // microCMSのオリジンURL
@@ -56,7 +56,7 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
     // 署名付きURLを発行して開く（有効期限 60秒）
     const signedUrl = await getSignedUrl(client, command, { expiresIn: 60 });
 
-    window.open(signedUrl, "_blank");
+    window.open(signedUrl, '_blank');
   };
 
   // ファイルを選択したらmicroCMS側にポストメッセージを送信
@@ -77,7 +77,7 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
           },
         },
       },
-      ORIGIN
+      ORIGIN,
     );
   };
 
@@ -88,12 +88,12 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
 
         <div
           className={`inline-flex items-center gap-2 font-mono ${
-            isSelected ? "" : "opacity-50 hover:opacity-100"
+            isSelected ? '' : 'opacity-50 hover:opacity-100'
           }`}
         >
           <div
             className={`${
-              isSelected ? "pointer-events-none" : "cursor-pointer"
+              isSelected ? 'pointer-events-none' : 'cursor-pointer'
             }`}
             onClick={() => handleSelect(id, fullURL)}
           >

@@ -1,6 +1,6 @@
 // JotaiのフックとAtomののインポート
-import { useAtomValue } from "jotai";
-import { selectedFileAtom, isErrorAtom } from "../atom";
+import { useAtomValue } from 'jotai';
+import { selectedFileAtom, isErrorAtom } from '../atom';
 
 export default function SelectedFileViewer() {
   const selectedFile = useAtomValue(selectedFileAtom);
@@ -9,7 +9,7 @@ export default function SelectedFileViewer() {
   return (
     <div
       className={`relative flex items-center p-3 mb-4 rounded border ${
-        isError ? "bg-red-100 border-red-300" : "bg-blue-100 border-blue-300"
+        isError ? 'bg-red-100 border-red-300' : 'bg-blue-100 border-blue-300'
       }`}
     >
       {isError ? (
