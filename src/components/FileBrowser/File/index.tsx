@@ -38,7 +38,7 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
     try {
       // 環境変数が露出しないよう、取得したトークンを裏窓APIにパスワードとして渡す
       const res = await fetch(
-        `/api/s3-presign?key=${key}&auth=${authToken || ''}`,
+        `/api/s3-presign?key=${key}&auth=${authToken || ''}`
       );
       if (!res.ok) throw new Error('署名取得に失敗しました');
 
@@ -65,11 +65,11 @@ export default function File({ id, fullURL, isImage, isSelected }: FileProps) {
         message: {
           data: {
             url: fullURL,
-            id: id,
-          },
-        },
+            id: id
+          }
+        }
       },
-      ORIGIN,
+      ORIGIN
     );
   };
 

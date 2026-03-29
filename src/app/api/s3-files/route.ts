@@ -17,14 +17,14 @@ export async function GET(request: Request) {
   if (PRIVATE_AUTH_TOKEN && clientToken !== PRIVATE_AUTH_TOKEN) {
     return NextResponse.json(
       { error: '認証エラー：不正なアクセスです' },
-      { status: 401 },
+      { status: 401 }
     );
   }
 
   if (!REGION || !BUCKET_NAME || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
     return NextResponse.json(
       { error: 'AWS設定が不足しています' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -32,15 +32,15 @@ export async function GET(request: Request) {
     region: REGION,
     credentials: {
       accessKeyId: ACCESS_KEY_ID,
-      secretAccessKey: SECRET_ACCESS_KEY,
-    },
+      secretAccessKey: SECRET_ACCESS_KEY
+    }
   });
 
   try {
     // ListObjectsV2コマンドを作成
     const command = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,
-      MaxKeys: 1000, // 取得数（必要に応じて増やす）
+      MaxKeys: 1000 // 取得数（必要に応じて増やす）
     });
 
     // 送信してデータを取得
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: 'S3からの取得に失敗しました' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

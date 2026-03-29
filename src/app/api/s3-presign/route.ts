@@ -18,14 +18,14 @@ export async function GET(request: Request) {
   if (SERVER_AUTH_TOKEN && clientToken !== SERVER_AUTH_TOKEN) {
     return NextResponse.json(
       { error: '認証エラー：不正なアクセスです' },
-      { status: 401 },
+      { status: 401 }
     );
   }
 
   if (!key || !REGION || !BUCKET_NAME || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
     return NextResponse.json(
       { error: '必須パラメータが不足しています' },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -33,8 +33,8 @@ export async function GET(request: Request) {
     region: REGION,
     credentials: {
       accessKeyId: ACCESS_KEY_ID,
-      secretAccessKey: SECRET_ACCESS_KEY,
-    },
+      secretAccessKey: SECRET_ACCESS_KEY
+    }
   });
 
   try {
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: '署名付きURLの取得に失敗しました' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

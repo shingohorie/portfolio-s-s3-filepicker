@@ -14,7 +14,7 @@ import {
   selectedFileAtom,
   searchWordAtom,
   frameIDAtom,
-  isErrorAtom,
+  isErrorAtom
 } from './atom';
 
 // S3から取得した情報の型定義
@@ -73,7 +73,7 @@ export default function FileBrowser() {
           key: item.Key!,
           fullURL: PUBLIC_URL_BASE + item.Key!,
           isImage: /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item.Key!),
-          lastModified: item.LastModified ?? new Date(0),
+          lastModified: item.LastModified ?? new Date(0)
         }))
         // 新しい順に並び替え
         .sort((a: S3File, b: S3File) => {
@@ -98,14 +98,14 @@ export default function FileBrowser() {
         setSelectedFile(e.data.message?.data.id || '');
       },
       onPostSuccess: (e) => setIsError(false),
-      onPostError: (e) => setIsError(true),
+      onPostError: (e) => setIsError(true)
     });
   }, []);
 
   const filteredFiles = useMemo(() => {
     if (searchWord === '' || !searchWord) return files;
     return files.filter(
-      (file) => file.key.split('/')[0].indexOf(searchWord) !== -1,
+      (file) => file.key.split('/')[0].indexOf(searchWord) !== -1
     );
   }, [files, searchWord]);
 
