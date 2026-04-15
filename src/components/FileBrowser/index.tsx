@@ -22,7 +22,7 @@ import type { _Object } from '@aws-sdk/client-s3';
 
 // 環境変数の読み込み
 const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
-const BUCKET_NAME = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
+const BUCKET_NAME = process.env.NEXT_PUBLIC_S3_BUCKET_NAME;
 const MICROCMS_SERVICE_ID = process.env.NEXT_PUBLIC_MICROCMS_SERVICE_ID;
 
 // 公開URLのベース
